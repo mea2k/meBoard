@@ -1,0 +1,33 @@
+{
+  "name": "meboard",
+  "version": "1.0.0",
+  "description": "Advert Board web-system",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "watch": "nodemon --ignore ./data/ -e .ts,.js,.ejs -L src/index.js",
+    "start_file": "set STORAGE_TYPE=file&& node src/index.js",
+    "start_db": "set STORAGE_TYPE=mongo&& node src/index.js"
+  },
+  "author": "Eugene",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "cookie-session": "^2.0.0",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "mongoose": "^7.2.2",
+    "multer": "^1.4.5-lts.1",
+    "passport": "^0.5.3",
+    "passport-local": "^1.0.0",
+    "socket.io": "^4.6.2",
+    "url": "^0.11.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
