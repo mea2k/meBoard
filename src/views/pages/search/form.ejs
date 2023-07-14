@@ -1,0 +1,123 @@
+<style>
+    .bootstrap-tagsinput .tag {
+        margin-right: 2px;
+        color: black !important;
+        background-color: aqua;
+        border-radius: 20%;
+        border: 1px solid lightblue;
+        padding: 0.2rem;
+        font-size: x-small;
+    }
+
+    .bootstrap-tagsinput {
+        line-height: 15px !important;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        width: 150px;
+    }
+
+    span.tag.label {
+        position: relative;
+        float: left;
+        margin: 2px 5px;
+    }
+
+    .bootstrap-tagsinput input {
+        position: relative;
+        float: left;
+        height: 30px;
+        margin-top: 4px;
+        margin-left: 5px;
+        padding: 0px;
+        text-align: left;
+    }
+</style>
+
+
+<form method="POST" class="mt-5" enctype="application/x-www-form-urlencoded" contentType='w-xxx-form-urlencoded'>
+    <div class=" p-3 bg-light row justify-content-start">
+        <div class="col-4">
+            <div class="form-check">
+                <input type="radio" class="form-check-input" id="searchTypeText" name="searchType" value="text">
+                <label for="searchTypeText" class="form-check-label">Поиск по объявлениям</label>
+            </div>
+            <div class="border p-3" id="searchTypeTextBlock">
+                <div class="form-group">
+                    <label for="inputTitle">Поиск в заголовке/тексте</label>
+                    <input type="text" name="searchText"
+                        value="<%= search_data.searchText ? search_data.searchText : '' %>" class="form-control"
+                        maxlength="100" id="inputTitle">
+                </div>
+
+                <div class="form-group">
+                    <label for="inputTags">Теги <font size="-1">(через пробел)</font></label>
+                    <input type="text" value="<%= search_data.tags ? search_data.tags.join(' ') : '' %>" name="tags"
+                        id="inputTags" class="form-control">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-4">
+            <div class="form-check">
+                <input type="radio" class="form-check-input" id="searchTypeUser" name="searchType" value="user">
+                <label for="searchTypeUser" class="form-check-label">Поиск по пользователям</label>
+            </div>
+            <div class="border p-3" id="searchTypeUserBlock">
+                <div class="form-group">
+                    <label for="inputUser">Email пользователя</label>
+                    <input type="text" value="<%= search_data.userEmail %>" name="userEmail" class="form-control"
+                        maxlength="100" id="inputUser">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="form-group text-right ">
+        <button type="submit" class="btn btn-primary">
+            Искать
+        </button>
+    </div>
+</form>
+
+<script>
+    var radioArray = document.querySelectorAll('input[name="searchType"]');
+    radioArray[`<%= search_data.searchType == "user" ? '1' : '0' %>`].checked = true;
+
+    var searchTypeTextDiv = document.querySelector('#searchTypeTextBlock');
+    var searchTypeUSerDiv = document.querySelector('#searchTypeUserBlock');
+
+    var searchTypeTextNodes = searchTypeTextDiv.getElementsByTagName('*');
+    var searchTypeUserNodes = searchTypeUSerDiv.getElementsByTagName('*');
+
+    function checkRadio() {
+        let readInput = () => {
+            if (document.querySelector('input[name="searchType"]:checked').value == "user") {
+                searchTypeTextDiv.setAttribute('disabled', true);
+                for (var i = 0; i < searchTypeTextNodes.length; i++) {
+                    searchTypeTextNodes[i].setAttribute('disabled', true);
+                }
+                searchTypeUSerDiv.removeAttribute('disabled');
+                for (var i = 0; i < searchTypeUserNodes.length; i++) {
+                    searchTypeUserNodes[i].removeAttribute('disabled');
+                }
+            } else {
+                searchTypeTextDiv.removeAttribute('disabled');
+                for (var i = 0; i < searchTypeTextNodes.length; i++) {
+                    searchTypeTextNodes[i].removeAttribute('disabled');
+                }
+                searchTypeUSerDiv.setAttribute('disabled', true);
+                for (var i = 0; i < searchTypeUserNodes.length; i++) {
+                    searchTypeUserNodes[i].setAttribute('disabled', true);
+                }
+            }
+        }
+        readInput();
+        radioArray.forEach((v) => {
+            v.addEventListener('click', readInput);
+        });
+    }
+
+    checkRadio();
+
+</script>

@@ -1,0 +1,48 @@
+<style>
+    ul.advert {
+        padding-top: 12px;
+        display: grid;
+        grid-auto-flow: row;
+        columns: 3;
+        -webkit-columns: 3;
+        -moz-columns: 3;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    li.advert-item {
+        list-style: none;
+        position: relative;
+        margin-bottom: 30px;
+        page-break-inside: avoid;
+        break-inside: avoid;
+
+    }
+
+    .advert-card {
+        border-color: #d7e2ec;
+        padding: 10px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .advert-card a.advert-card-fieldset,
+    .advert-card a:hover.advert-card-fieldset {
+        color: #000;
+        text-decoration: none;
+    }
+</style>
+
+<% if(data && data.length) { %>
+    <ul class="advert">
+        <% data.map((item, idx)=> { %>
+            <li class="advert-item">
+                <%- include('advert_card', {item}) %>
+            </li>
+            <% }) %>
+    </ul>
+
+    <% } else { %>
+        <h3 class="mt-5">Объявлений пока нет</h3>
+        <% } %>

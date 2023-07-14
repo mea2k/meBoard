@@ -1,0 +1,7 @@
+{
+    "HOSTNAME": "localhost",
+    "PORT": 3000,
+    "DATA_PATH": "./data/",
+    "UPLOAD_PATH": "./public/upload/",
+    "STORAGE_TYPE": "file"
+}

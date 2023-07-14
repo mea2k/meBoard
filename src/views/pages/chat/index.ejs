@@ -1,0 +1,18 @@
+<%- include('../../layouts/layout_start', {title}) %>
+
+    <h1>
+        <%= title %>
+    </h1>
+    <%- include('search_form', {search_data}) %>
+
+    <% if (search_data?.userEmail) { %>
+        <h3 class="mt-5">Результаты поиска</h3>
+    <% } else { %>
+        <h3 class="mt-5">Чаты пользователя</h3>
+    <% } %>
+        
+    <div class="container border-1">
+        <%- include('list', {data}) %>
+    </div>
+    
+    <%- include('../../layouts/layout_end') %>

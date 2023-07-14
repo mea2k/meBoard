@@ -1,0 +1,81 @@
+<%- include('../../layouts/layout_start', {title}) %>
+
+
+    <h1>
+        <%= title %>
+    </h1>
+
+    <div class="row">
+        <div class="col-sm-6">
+
+            <form method="POST" class="mt-5" contentType='w-xxx-form-urlencoded'>
+                <div class="form-group">
+                    <label for="inputLogin">Логин</label>
+                    <input type="text" id="inputLogin" name="login"
+                        class="form-control <%= locals.errors?.login ? 'is-invalid' : '' %>" value="<%= user?.login %>"
+                        required>
+                    <div class="invalid-feedback">
+                        <%= locals.errors?.login %>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputPassword">Пароль</label>
+                    <input type="password" id="inputPassword" name="password"
+                        class="form-control <%= locals.errors?.password ? 'is-invalid' : '' %>" required>
+                    <div class="invalid-feedback">
+                        <%= locals.errors?.password %>
+                    </div>
+                </div>
+
+                <% if (data.newUser){ %>
+                    <div class="form-group">
+                        <label for="inputPassword2">Повторите пароль</label>
+                        <input type="password" id="inputPassword2" name="password2"
+                            class="form-control <%= locals.errors?.password ? 'is-invalid' : '' %>" required>
+                        <div class="invalid-feedback">
+                            <%= locals.errors?.password %>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputName">Имя</label>
+                        <input type="text" id="inputName" name="name"
+                            class="form-control <%= locals.errors?.password ? 'is-invalid' : '' %>"
+                            value="<%= user?.name %>" required>
+                        <div class="invalid-feedback">
+                            <%= locals.errors?.name %>
+                        </div>
+                    </div>
+                    <div class=" form-group">
+                        <label for="inputEmail">Email</label>
+                        <input type="email" id="inputEmail" name="email"
+                            class="form-control <%= locals.errors?.password ? 'is-invalid' : '' %>"
+                            value="<%= user?.email %>" required>
+                        <div class="invalid-feedback">
+                            <%= locals.errors?.email %>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPhone">Телефон</label>
+                        <input type="text" id="inputPhone" name="contactPhone" class="form-control"
+                            value="<%= user?.contactPhone %>">
+                    </div>
+                    <% } %>
+                        <div class="form-group row">
+                            <% if (!data.newUser){ %>
+                                <div class="col">
+                                    <a href="/user/signup">Зарегистрироваться</a>
+                                </div>
+                                <% } %>
+                                    <div class="col text-right">
+                                        <button type="submit" class="btn btn-primary">
+                                            <%= action %>
+                                        </button>
+                                    </div>
+                        </div>
+            </form>
+        </div>
+    </div>
+
+
+    <%- include('../../layouts/layout_end') %>

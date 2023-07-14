@@ -1,0 +1,20 @@
+<div class="container row display-row">
+    <div class="col">
+    <% if (data.chatStat) { %>
+        <a href="/chat/<%= data._id %>" class="p-1">
+            Чат с пользователем <%= data.login %>
+        </a>
+        <% if (data.chatStat?.newMsgs) { %>
+            <span class="badge rounded-pill bg-danger">
+                <%= data.chatStat?.newMsgs %>
+            </span>
+        <% } else { %>
+            <span class="badge rounded-pill bg-secondary">
+                <%= data.chatStat?.totalMsgs %>
+            </span>
+        <% } %>
+    <% } else { %>
+        <a href="/chat/add/<%= data.userId %>" class="p-1">
+            Создать чат с пользователем <%= data.login %>
+        </a>
+    <% } %>

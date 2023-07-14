@@ -1,0 +1,13 @@
+<%- include('../../layouts/layout_start', {title}) %>
+
+    <h1>
+        <%= title %>
+    </h1>
+    
+
+    <%- include('form', {search_data}) %>
+
+
+    <%- include('../adverts/list', {data}) %>
+
+    <%- include('../../layouts/layout_end') %>

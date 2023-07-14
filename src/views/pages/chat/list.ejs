@@ -1,0 +1,15 @@
+
+<% if(data && data.length) { %>
+    <div class="container">
+        <% data.map((item, idx)=> { %>
+            <div class="row">
+                <%- include('list_item', {data: item}) %>
+            </div>
+            <% }) %>
+          </div>
+
+    <% } else { %>
+        <h4 class="mt-5">Чатов пока нет</h4>
+    <% } %>
+
+

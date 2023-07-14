@@ -1,0 +1,37 @@
+<% if (item.isDeleted) { %>
+    <div class="card advert-card<%= item.isDeleted ? ' opacity-25' : '' %>" style="width: 18rem; pointer-events: none;"
+        disabled>
+        <fieldset disabled>
+            <% } else { %>
+                <div class="card advert-card<%= item.isDeleted ? ' opacity-25' : '' %>" style="width: 18rem;">
+                    <fieldset>
+                        <% } %>
+                            <a href="/advert/<%= item._id %>" class="advert-card-fieldset">
+                                <h5 class="card-title">
+                                    <%= item.shortText %>
+                                </h5>
+                                <div class="card-body">
+                                    <img class="card-img-top"
+                                        src="/<%= item.images?.length ? item.images[0].path : 'public/nophoto.jpg' %>"
+                                        alt="<%= item.shortText %>">
+                                    <p class="card-text">
+                                        <%= item.description %>
+                                    </p>
+                                </div>
+                            </a>
+                            <form
+                                class="list-group list-group-horizontal d-flex flex-row m-0 p-0 justify-content-md-left"
+                                action="/search" method="POST" enctype="application/x-www-form-urlencoded"
+                                contentType='w-xxx-form-urlencoded'>
+                                <% item.tags.map((tag, idx)=> { %>
+                                    <div class="col-md-auto border border-light p-1">
+                                        <button class="tag m-0 p-0 border-0" name="tags" value="<%=tag %>">#<%=tag %>
+                                        </button>
+                                    </div>
+                                    <% }) %>
+                            </form>
+                            <div class="card-body">
+                                <a href="/advert/<%= item._id %>" class="card-link">Подробнее</a>
+                            </div>
+                    </fieldset>
+                </div>

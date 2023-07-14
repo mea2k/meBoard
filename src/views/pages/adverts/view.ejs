@@ -1,0 +1,113 @@
+<%- include('../../layouts/layout_start', {title}) %>
+
+
+    <h1>
+        <%= title %>
+    </h1>
+
+
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="card">
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        <%= data.shortText %>
+                    </h5>
+                    <p class="card-text">
+                        <%= data.description %>
+                    </p>
+                    <div>
+                        <h6>Теги:</h6>
+                        <form class="list-group list-group-horizontal d-flex flex-row pb-2" action="/search" method="POST"
+                            enctype="application/x-www-form-urlencoded" contentType='w-xxx-form-urlencoded'>
+                            <% data.tags.map((tag, idx)=> { %>
+                                <div class="list-group-item">
+                                    <button class="link tag border-0" name="tags" value="<%= tag %>">
+                                        #<%= tag %>
+                                    </button>
+                                </div>
+                                <% }) %>
+                        </form>
+                    </div>
+
+                    <% if(data.userId != user?._id) { %>
+                        <div class="pb-2">
+                            <h6>
+                                <a href="/user/profile/<%= data.userId %>">Информация о пользователе</a>
+                            </h6>
+                        </div>
+                    <% } %>
+
+                    <% if(data.images && data.images.length) { %>
+                        <div id="ImagesCarousel" class="carousel slide pb-3 mb-2 border-bottom border-light" data-bs-ride="carousel">
+                            <div class="carousel-indicators">
+                                <% data.images.map((image, idx)=> { %>
+                                    <button type="button" data-bs-target="#ImagesCarousel" data-bs-slide-to="<%= idx %>"
+                                        class="<%= idx==0 ? 'active' : ''%>" aria-current="<%= idx==0 ? 'true' : ''%>"" 
+                                    aria-label=" Slide <%=idx %>"
+                                        ></button>
+                                    <% }) %>
+                            </div>
+                            <div class="carousel-inner">
+                                <% data.images.map((image, idx)=> { %>
+                                    <div class="carousel-item<%= idx==0 ? ' active' : ''%>" data-bs-interval="5000">
+                                        <img src="/<%= image.path %>" class="d-block w-100" alt="<%= data.shortText %>">
+                                        <div class="carousel-caption d-none d-md-block">
+                                            <h5>
+                                                <%= image.name %>
+                                            </h5>
+                                            <p>
+                                                <%= data.shortText %>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <% }) %>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#ImagesCarousel"
+                                data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Предыдущее</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#ImagesCarousel"
+                                data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Следующее</span>
+                            </button>
+                        </div>
+                        <% } else { %>
+                            <img src="/public/nophoto.jpg" class="d-block w-100" alt="<%= data.shortText %>">
+                            <% } %>
+
+                                <% if (user?._id==data.userId) { %>
+                                    <div class="text-right p-1 border">
+                                        <a class="btn btn-sm btn-primary" href="/advert/edit/<%= data._id %>">
+                                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                                        </a>
+                                        <form action="/advert/delete/<%= data._id %>" method="POST" class="d-inline">
+                                            <button class="btn btn-sm btn-danger">
+                                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                <% } else { %>
+
+                                    <h4> Чат с пользователем</h4>
+                                    <div class="row">
+                                        <% if (locals.chat?.chatStat) { %>
+                                            <%- include('../chat/list_item', {data: chat}) %>
+                                        <% } else { %>
+                                            <a href="/chat/add/<%= data.userId %>">Создать чат</a>
+                                        <% } %>
+                                    </div>
+                                <% } %>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <%- include('../../layouts/layout_end') %>

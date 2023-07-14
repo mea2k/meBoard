@@ -1,0 +1,38 @@
+<%- include('../../layouts/layout_start', {title}) %>
+
+
+<h1>
+    <%= title %>
+</h1>
+
+
+<div class="row">
+    <div class="col-sm-8">
+        <div class="card">
+            <div class="card-body">
+
+                <h5 class="card-title"><%= data.login %></h5>
+                <h6>Имя: <span><%= data.name %></span></h6>
+                <p class="card-text">Email: <span><%= data.email %></span></p>
+                <p class="card-text">Телефон: <span><%= data.contactPhone %></span></p>
+            </div>
+        </div>
+    </div>
+</div>
+<h2> Объявления пользователя</h2>
+<div class="row">
+<%- include('../adverts/list', {data: adverts}) %>
+</div>
+
+<h2> Чаты с пользователями</h2>
+<div class="row">
+<% if (locals.chat) { %>
+    <%- include('../chat/list', {data: chat}) %>
+<% } else if (locals.user?._id !== data._id) {%>
+    <a href="/chat/add/<%= data._id %>">Создать чат</a>
+<% } %>
+</div>
+
+
+<%- include('../../layouts/layout_end') %>
+

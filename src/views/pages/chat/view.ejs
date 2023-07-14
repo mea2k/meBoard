@@ -1,0 +1,202 @@
+<%- include('../../layouts/layout_start', {title}) %>
+
+
+  <h1>
+    <%= title %>
+  </h1>
+
+
+  <section style="background-color: #eee;">
+    <div class="container py-5">
+      <div class="row d-flex justify-content-center" style="overflow-y: auto; max-height: 600px;">
+        <div class="col-md-10 col-lg-8 col-xl-6">
+
+          <div class="card">
+            <div class="card-body" data-mdb-perfect-scrollbar="true" style="position: relative;" id="chat_main_box">
+
+
+            </div>
+          </div>
+
+          <div class="card-footer text-muted d-flex justify-content-between align-items-center p-3">
+
+            <div class="d-flex form-group">
+              <textarea placeholder="Введите текст..." class="form-control-lg mb-3 mr-4" id="msg_text"></textarea>
+            </div>
+            <div class="form-group justify-content-right">
+              <button type="submit" id="send-room" title="ENTER" class="btn btn-primary mb-3 mr-3">Отправить</button>
+              <!-- button type="submit" id="send-me" title="CTRL+ENTER" class="btn btn-primary mb-3">мне</button -->
+            </div>
+
+
+
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+    <div class="row d-flex justify-content-center">
+      <div class="col-4">
+
+      </div>
+    </div>
+    <div class="col-md-10 col-lg-8 col-xl-6"></div>
+
+    </div>
+  </section>
+
+  <script>
+    const chatId = `<%= data._id %>`
+    const socket = io.connect('/', { query: `chatId=${chatId}` });
+
+    const chatBox = document.querySelector('#chat_main_box');
+    const login = `<%= user?.login %>`;
+    const userId = `<%= user?._id %>`;
+    const inputText = document.querySelector('#msg_text');
+    //const sendAll = document.querySelector('#send-all');
+    //const sendMe = document.querySelector('#send-me');
+    const sendRoom = document.querySelector('#send-room');
+
+    const getTemplateMyMessage = (msg) => {
+      const date = new Date(msg.sentAt)
+      const dateStr = date.toLocaleDateString("ru-RU") + ' ' + date.toLocaleTimeString("ru-RU")
+       return `
+        <div class="justify-content-end mb-4">
+          <div class="d-flex w-100 justify-content-between">
+            <p class="small mb-0 rounded-3 text-muted">${dateStr}</p>
+            <p class="small mb-0">${msg.authorName}</p>
+          </div>
+          <div class="d-flex flex-row justify-content-end">
+            <div>
+              <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">
+              ${msg.text}
+            </p>
+            </div>
+          </div>
+        </div>        
+      `;
+    };
+
+    const getTemplateMessage = (msg) => {
+      const date = new Date(msg.sentAt)
+      const dateStr = date.toLocaleDateString("ru-RU") + ' ' + date.toLocaleTimeString("ru-RU")
+      return `
+        <div class="justify-content-start mb-4">
+          <div class="d-flex w-100 justify-content-between">
+            <p class="small mb-0">${msg.authorName}</p>
+            <p class="small mb-0 rounded-3 text-muted">${dateStr}</p>
+          </div>
+          <div class="d-flex flex-row justify-content-start">
+            <div>
+              <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">
+                ${msg.text}
+              </p>
+            </div>
+          </div>
+        </div>
+      `;
+    };
+
+    const makeMsg = (text) => {
+      const date = new Date()
+      return {
+        chatId: chatId,
+        authorName: login,
+        authorId: userId,
+        text: text.trim(),
+        sentAt: date  //date.toLocaleDateString("ru-RU") + ' ' + date.toLocaleTimeString("ru-RU")
+      }
+    };
+
+    socket.on('connect', () => {
+      socket.on('message-to-me', (msg) => {
+        var div
+        if (msg.authorId === userId)
+          div = getTemplateMyMessage(msg)
+        else
+          div = getTemplateMessage(msg)
+
+        chatBox.insertAdjacentHTML('beforeend', div)
+      });
+
+      socket.on('message-to-all', (msg) => {
+        var div
+        if (msg.authorId === userId)
+          div = getTemplateMyMessage(msg)
+        else
+          div = getTemplateMessage(msg)
+
+        chatBox.insertAdjacentHTML('beforeend', div)
+      });
+
+
+      socket.on('message-to-chat', (msg) => {
+        var div
+        if (msg.authorId === userId)
+          div = getTemplateMyMessage(msg)
+        else
+          div = getTemplateMessage(msg)
+
+        chatBox.insertAdjacentHTML('beforeend', div)
+        // Прокручиваем лог в конец
+        chatBox.scrollTop = chatBox.scrollHeight;
+      });
+
+
+      // При нажатии <Enter> или кнопки отправляем текст
+      inputText.onkeypress = (e) => {
+        if ((e.keyCode === 10 || e.keyCode === 13) && e.ctrlKey) {
+          // при нажатии <CTRL>+<ENTER> отправляем сообщение ТОЛЬКО СЕБЕ (message-to-me)
+          e.preventDefault()
+          // Отправляем содержимое input'а, закодированное в escape-последовательность
+          socket.emit('message-to-me', makeMsg(inputText.value));
+          // Очищаем input
+          inputText.value = '';
+        } else if (e.keyCode === 13 || e.keyCode === 10) {
+          // при нажатии <ENTER> отправляем сообщение ВСЕМ В ЧАТ (message-to-chat)
+          e.preventDefault()
+          // Отправляем содержимое input'а, закодированное в escape-последовательность
+          socket.emit('message-to-chat', makeMsg(inputText.value));
+          // Очищаем input
+          inputText.value = '';
+        }
+      };
+
+      // sendMe.addEventListener('click', () => {
+      //   socket.emit('message-to-me', makeMsg(inputText.value))
+      //   inputText.value = '';
+      // })
+
+      // sendAll.addEventListener('click', () => {
+      //   socket.emit('message-to-all', makeMsg(inputText.value))
+      //   inputText.value = '';
+      // })
+
+      sendRoom.addEventListener('click', () => {
+        socket.emit('message-to-chat', makeMsg(inputText.value))
+        inputText.value = '';
+      })
+
+    })
+
+    // заполнение истории чата
+    const chatHistory = JSON.parse(`<%- JSON.stringify(chatHistory) %>`)
+    for (let msg of chatHistory) {
+      if (msg.authorId === userId)
+        div = getTemplateMyMessage(msg)
+      else
+        div = getTemplateMessage(msg)
+
+      chatBox.insertAdjacentHTML('beforeend', div)
+    }
+    // Прокручиваем лог в конец
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+
+
+  </script>
+
+
+
+  <%- include('../../layouts/layout_end') %>

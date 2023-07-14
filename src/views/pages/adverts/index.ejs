@@ -1,0 +1,10 @@
+<%- include('../../layouts/layout_start', {title}) %>
+
+    <h1>
+        <%= title %>
+    </h1>
+    <a class="btn btn-sm btn-primary p-2 m-2" href="/advert/add">Добавить новое объявление</a>
+
+    <%- include('list', {data}) %>
+
+    <%- include('../../layouts/layout_end') %>

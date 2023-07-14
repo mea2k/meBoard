@@ -1,0 +1,104 @@
+<style>
+    .bootstrap-tagsinput .tag {
+        margin-right: 2px;
+        color: black !important;
+        background-color: aqua;
+        border-radius: 20%;
+        border: 1px solid lightblue;
+        padding: 0.2rem;
+        font-size: x-small;
+    }
+
+    .bootstrap-tagsinput {
+        line-height: 15px !important;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        width: 150px;
+    }
+
+    span.tag.label {
+        position: relative;
+        float: left;
+        margin: 2px 5px;
+    }
+
+    .bootstrap-tagsinput input {
+        position: relative;
+        float: left;
+        height: 30px;
+        margin-top: 4px;
+        margin-left: 5px;
+        padding: 0px;
+        text-align: left;
+    }
+</style>
+
+
+<form method="POST" class="mt-5" enctype="multipart/form-data" contentType='w-xxx-form-urlencoded'>
+    <div class="form-group">
+        <label for="inputTitle">Краткий текст</label>
+        <input type="text" value="<%= data.shortText %>" name="shortText" class="form-control" maxlength="100"
+            id="inputTitle">
+    </div>
+
+    <div class="form-group">
+        <label for="inputDesc">Описание</label>
+        <textarea rows="3" name="description" class="form-control" id="inputDesc"><%= data.description %></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="inputTags">Теги <font size="-1">(через пробел)</font></label>
+        <input type="text" value="<%= data.tags ? data.tags.join(' ') : '' %>" name="tags" 
+            id="inputTags" class="bootstrap-tagsinput"
+            data-role="tagsinput" data-select2-tags="true">
+    </div>
+
+    <div class="form-group" id="imageParentDiv">
+        <label for="inputImage">
+            Файлы
+            <button id="addImage" style="border-radius: 30%">+</button>
+        </label>
+        <input type="file" value="" name="images[]" class="form-control" id="inputImage"
+            accept="image/png, image/gif, image/jpeg">
+
+    </div>
+
+    <div class="form-group text-right ">
+        <button type="submit" class="btn btn-primary">
+            <%= action %>
+        </button>
+    </div>
+</form>
+
+<script>
+    const buttonAddImage = document.getElementById("addImage");
+    const parentDiv = document.getElementById("imageParentDiv");
+    const templateImageInput = parentDiv.getElementsByTagName("input")[0];
+    var counter = +'<%= data?.images ? data.images.length + 1 : 1 %>';
+
+    buttonAddImage.addEventListener('click', (e) => {
+        e.preventDefault();
+        counter++;
+        parentDiv.insertAdjacentHTML('beforeend', templateImageInput.outerHTML);
+        if (counter >= 5) {
+            buttonAddImage.disabled = true;
+        }
+    })
+
+    $('#inputTags').tagsinput({
+        delimiterRegex: /\s+/,
+        maxTags: 5,
+        trimValue: true,
+        confirmKeys: [32],
+        allowDuplicates: false,
+        onTagExists: function(item, $tag) {
+            alert('Tag already exists')
+            $tag.hide.fadeIn();
+          }
+    });
+
+    // $("#inputTags").select2({
+    //     tags: true,
+    //     tokenSeparators: [',', ' ']
+    // })
+</script>
